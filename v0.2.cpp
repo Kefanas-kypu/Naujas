@@ -32,11 +32,18 @@ struct studentas {
     double mediana;
 };
 
+struct StudentGroups {
+    vector<studentas> kietiakiai;
+    vector<studentas> vargsiukai;
+};
+
 studentas stud_iv();
 void skaityti_is_failo(vector<studentas>& grupe, const string& failo_vardas);
 void spausdinti_grupe(vector<studentas>& grupe);
 void surusiuoti_pagal_varda(vector<studentas>& grupe);
-void generuoti_studentu_failus(); // nauja funkcija
+void generuoti_studentu_failus();
+StudentGroups padalinti_studentus(const vector<studentas>& grupe);
+void issaugoti_i_faila(const vector<studentas>& grupe, const string& failo_vardas);
 
 int main() {
     srand(time(0));
@@ -45,13 +52,14 @@ int main() {
     int pasirinkimas;
 
     do {
-        cout << "\nKa norite atlikti?" << endl;
+        cout << "Ka norite atlikti?" << endl;
         cout << "1. Ivesti nauja studenta" << endl;
         cout << "2. Atspausdinti rezultatus" << endl;
         cout << "3. Iseiti" << endl;
         cout << "4. Nuskaityti studentus is failo" << endl;
         cout << "5. Sugeneruoti atsitiktinius studentu failus" << endl;
-        cout << "Pasirinkite veiksma: ";
+        cout << "6. Padalinti studentus i grupes ir issaugoti i failus" << endl;
+        cout << "Pasirinkite veiksma: " << endl;
         cin >> pasirinkimas;
 
         switch (pasirinkimas) {
@@ -71,6 +79,13 @@ int main() {
         case 5:
             generuoti_studentu_failus();
             break;
+        case 6: {
+            StudentGroups groups = padalinti_studentus(grupe);
+            issaugoti_i_faila(groups.kietiakiai, "kietiakiai.txt");
+            issaugoti_i_faila(groups.vargsiukai, "vargsiukai.txt");
+            cout << "Studentai issaugoti i 'kietiakiai.txt' ir 'vargsiukai.txt'" << endl;
+            break;
+        }
         default:
             cout << "Neteisingas pasirinkimas." << endl;
         }
@@ -227,7 +242,6 @@ void skaityti_is_failo(vector<studentas>& grupe, const string& failo_vardas) {
     cout << "Studentai nuskaityti is failo " << failo_vardas << endl;
 }
 
-// Nauja funkcija: generuoja studentų failus
 void generuoti_studentu_failus() {
     vector<int> dydziai = {1000, 10000, 100000, 1000000, 10000000};
 
@@ -239,9 +253,8 @@ void generuoti_studentu_failus() {
             continue;
         }
 
-        // Sukuriame header
         failas << "Vardas Pavarde";
-        for (int i = 1; i <= 5; i++) failas << " ND" << i; // 5 namu darbu pazymiai
+        for (int i = 1; i <= 5; i++) failas << " ND" << i;
         failas << " Egzaminas" << endl;
 
         for (int i = 1; i <= dydis; i++) {
@@ -254,4 +267,38 @@ void generuoti_studentu_failus() {
 
         cout << "Sugeneruotas failas: " << failo_vardas << " su " << dydis << " irasu" << endl;
     }
+}
+
+StudentGroups padalinti_studentus(const vector<studentas>& grupe) {
+    StudentGroups groups;
+    for (const auto& stud : grupe) {
+        if (stud.gal_rezultatas >= 5.0)
+            groups.kietiakiai.push_back(stud);
+        else
+            groups.vargsiukai.push_back(stud);
+    }
+    return groups;
+}
+
+void issaugoti_i_faila(const vector<studentas>& grupe, const string& failo_vardas) {
+    ofstream out(failo_vardas);
+    if (!out) {
+        cout << "Nepavyko sukurti failo: " << failo_vardas << endl;
+        return;
+    }
+
+    out << setw(10) << left << "Vardas" << "|"
+        << setw(15) << right << "Pavarde" << "|"
+        << setw(20) << right << "Galutinis (Vid.)" << "|"
+        << setw(20) << right << "Galutinis (Med.)" << endl;
+    out << "--------------------------------------------------------------------" << endl;
+
+    for (const auto& stud : grupe) {
+        out << setw(11) << left << stud.vardas << "|"
+            << setw(15) << right << stud.pavarde << "|"
+            << fixed << setprecision(2) << setw(20) << right << stud.gal_rezultatas << "|"
+            << fixed << setprecision(2) << setw(20) << right << stud.mediana << endl;
+    }
+
+    out.close();
 }
