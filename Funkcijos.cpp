@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <cstdlib>
 #include <ctime>
+#include <chrono>
 
 using namespace std;
 
@@ -39,7 +40,7 @@ Studentas stud_iv() {
         cin >> kl;
 
         if (kl == 0) {
-            int laik_paz = -1;
+            laik_paz = -1;
             while (laik_paz != 0) {
                 cout << "Iveskite pazymi (arba 0, jei daugiau pazymiu nera): ";
                 cin >> laik_paz;
@@ -114,12 +115,10 @@ void skaityti_is_failo(vector<Studentas>& grupe, const string& failo_vardas) {
     getline(failas, header);
 
     int nd_kiekis = 0;
-    {
-        istringstream iss(header);
-        string word;
-        while (iss >> word) {
-            if (word.find("ND") != string::npos) nd_kiekis++;
-        }
+    istringstream iss(header);
+    string word;
+    while (iss >> word) {
+        if (word.find("ND") != string::npos) nd_kiekis++;
     }
 
     string vardas, pavarde;
@@ -140,7 +139,6 @@ void skaityti_is_failo(vector<Studentas>& grupe, const string& failo_vardas) {
         int sum = 0;
         for (auto p : temp.paz) sum += p;
         int n = temp.paz.size();
-
         temp.gal_rezultatas = double(sum) / double(n) * 0.4 + temp.egzaminas * 0.6;
 
         vector<int> paz_temp = temp.paz;
@@ -186,6 +184,49 @@ void issaugoti_i_faila(const vector<Studentas>& grupe, const string& failo_varda
             << fixed << setprecision(2) << setw(20) << right << stud.gal_rezultatas << "|"
             << fixed << setprecision(2) << setw(20) << right << stud.mediana << endl;
     }
+}
 
-    out.close();
+void generuoti_studentu_faila(long long n, int nd_count) {
+    ofstream fout("studentai_" + to_string(n) + ".txt");
+    if (!fout) {
+        cout << "Nepavyko sukurti failo\n";
+        return;
+    }
+
+    fout << "Vardas Pavarde";
+    for (int i = 1; i <= nd_count; ++i) fout << " ND" << i;
+    fout << " Egzaminas\n";
+
+    for (long long i = 1; i <= n; ++i) {
+        fout << "Vardas" << i << " Pavarde" << i;
+        for (int j = 0; j < nd_count; ++j) fout << " " << (rand() % 10 + 1);
+        fout << " " << (rand() % 10 + 1) << "\n";
+    }
+
+    fout.close();
+    cout << "Sugeneruotas failas studentai_" << n << ".txt su " << n << " studentais.\n";
+}
+
+Studentas generuoti_atsitiktini_studenta() {
+    Studentas s;
+    s.vardas = "Vardas" + to_string(rand() % 1000);
+    s.pavarde = "Pavarde" + to_string(rand() % 1000);
+    int kiek = rand() % 10 + 1;
+    int sum = 0;
+    for (int i = 0; i < kiek; i++) {
+        int paz = rand() % 10 + 1;
+        s.paz.push_back(paz);
+        sum += paz;
+    }
+    s.egzaminas = rand() % 10 + 1;
+    s.gal_rezultatas = double(sum) / double(kiek) * 0.4 + s.egzaminas * 0.6;
+
+    vector<int> tmp = s.paz;
+    tmp.push_back(s.egzaminas);
+    sort(tmp.begin(), tmp.end());
+    int size = tmp.size();
+    if (size % 2 != 0) s.mediana = tmp[size / 2];
+    else s.mediana = (tmp[(size - 1) / 2] + tmp[size / 2]) / 2.0;
+
+    return s;
 }
