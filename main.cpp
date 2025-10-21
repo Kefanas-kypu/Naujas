@@ -42,7 +42,7 @@ int main() {
 
         case 4: {
             auto start = chrono::high_resolution_clock::now();
-            skaityti_is_failo(grupe, "studentai_1000000.txt");
+            skaityti_is_failo(grupe, "studentai_100000.txt");
             auto end = chrono::high_resolution_clock::now();
             auto duration = chrono::duration_cast<chrono::milliseconds>(end - start).count();
             cout << "Duomenu nuskaitymas uztruko: " << duration << " ms\n";
