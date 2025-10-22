@@ -6,10 +6,10 @@
 #include <algorithm>
 #include <cstdlib>
 #include <ctime>
-#include <chrono>
 
 using namespace std;
 
+// ------------------ stud_iv (ivedimas is klaviaturos) ------------------
 Studentas stud_iv() {
     Studentas pirmas;
     int sum = 0, n = 0;
@@ -40,13 +40,13 @@ Studentas stud_iv() {
         cin >> kl;
 
         if (kl == 0) {
-            laik_paz = -1;
-            while (laik_paz != 0) {
+            int laik_paz_local = -1;
+            while (laik_paz_local != 0) {
                 cout << "Iveskite pazymi (arba 0, jei daugiau pazymiu nera): ";
-                cin >> laik_paz;
-                if (laik_paz != 0) {
-                    pirmas.paz.push_back(laik_paz);
-                    sum += laik_paz;
+                cin >> laik_paz_local;
+                if (laik_paz_local != 0) {
+                    pirmas.paz.push_back(laik_paz_local);
+                    sum += laik_paz_local;
                     n++;
                 }
             }
@@ -66,18 +66,27 @@ Studentas stud_iv() {
         }
     }
 
-    pirmas.gal_rezultatas = double(sum) / double(n) * 0.4 + pirmas.egzaminas * 0.6;
+    if (n == 0) {
+        pirmas.gal_rezultatas = pirmas.egzaminas;
+    } else {
+        pirmas.gal_rezultatas = double(sum) / double(n) * 0.4 + pirmas.egzaminas * 0.6;
+    }
 
     vector<int> paz_temp = pirmas.paz;
     paz_temp.push_back(pirmas.egzaminas);
     sort(paz_temp.begin(), paz_temp.end());
-    int kiek = paz_temp.size();
-    if (kiek % 2 != 0) pirmas.mediana = double(paz_temp[kiek / 2]);
-    else pirmas.mediana = double(paz_temp[(kiek - 1) / 2] + paz_temp[kiek / 2]) / 2.0;
+    int kiek = static_cast<int>(paz_temp.size());
+    if (kiek == 0)
+        pirmas.mediana = 0.0;
+    else if (kiek % 2 != 0)
+        pirmas.mediana = double(paz_temp[kiek / 2]);
+    else
+        pirmas.mediana = double(paz_temp[(kiek - 1) / 2] + paz_temp[kiek / 2]) / 2.0;
 
     return pirmas;
 }
 
+// ------------------ atspausdinti grupe i ekrana ------------------
 void spausdinti_grupe(const vector<Studentas>& grupe) {
     if (grupe.empty()) {
         cout << "Nera studentu" << endl;
@@ -98,12 +107,27 @@ void spausdinti_grupe(const vector<Studentas>& grupe) {
     }
 }
 
+// ------------------ rusiavimas pagal varda ------------------
 void surusiuoti_pagal_varda(vector<Studentas>& grupe) {
     sort(grupe.begin(), grupe.end(), [](const Studentas& a, const Studentas& b) {
         return a.vardas < b.vardas;
     });
 }
 
+// ------------------ bendras rusiavimas pagal pasirinkima ------------------
+void rikiuoti_studentus(vector<Studentas>& grupe, bool pagal_varda) {
+    if (pagal_varda) {
+        sort(grupe.begin(), grupe.end(), [](const Studentas& a, const Studentas& b) {
+            return a.vardas < b.vardas;
+        });
+    } else {
+        sort(grupe.begin(), grupe.end(), [](const Studentas& a, const Studentas& b) {
+            return a.gal_rezultatas > b.gal_rezultatas;
+        });
+    }
+}
+
+// ------------------ skaityti is failo ------------------
 void skaityti_is_failo(vector<Studentas>& grupe, const string& failo_vardas) {
     ifstream failas(failo_vardas);
     if (!failas) {
@@ -113,6 +137,10 @@ void skaityti_is_failo(vector<Studentas>& grupe, const string& failo_vardas) {
 
     string header;
     getline(failas, header);
+    if (header.empty()) {
+        cout << "Failas " << failo_vardas << " tuščias arba netinkamas." << endl;
+        return;
+    }
 
     int nd_kiekis = 0;
     istringstream iss(header);
@@ -130,30 +158,32 @@ void skaityti_is_failo(vector<Studentas>& grupe, const string& failo_vardas) {
 
         int pazymys;
         for (int i = 0; i < nd_kiekis; i++) {
-            failas >> pazymys;
+            if (!(failas >> pazymys)) return;
             temp.paz.push_back(pazymys);
         }
 
-        failas >> temp.egzaminas;
+        if (!(failas >> temp.egzaminas)) return;
 
         int sum = 0;
         for (auto p : temp.paz) sum += p;
-        int n = temp.paz.size();
-        temp.gal_rezultatas = double(sum) / double(n) * 0.4 + temp.egzaminas * 0.6;
+        int n = static_cast<int>(temp.paz.size());
+        temp.gal_rezultatas = (n == 0) ? temp.egzaminas : double(sum) / n * 0.4 + temp.egzaminas * 0.6;
 
         vector<int> paz_temp = temp.paz;
         paz_temp.push_back(temp.egzaminas);
         sort(paz_temp.begin(), paz_temp.end());
-        int kiek = paz_temp.size();
-        if (kiek % 2 != 0) temp.mediana = double(paz_temp[kiek / 2]);
-        else temp.mediana = double(paz_temp[(kiek - 1) / 2] + paz_temp[kiek / 2]) / 2.0;
+        int kiek = static_cast<int>(paz_temp.size());
+        temp.mediana = (kiek == 0) ? 0.0 :
+                       (kiek % 2 != 0 ? paz_temp[kiek / 2] :
+                       double(paz_temp[(kiek - 1) / 2] + paz_temp[kiek / 2]) / 2.0);
 
         grupe.push_back(temp);
     }
 
-    cout << "Studentai nuskaityti is failo " << failo_vardas << endl;
+    cout << "Studentai nuskaityti is failo: " << failo_vardas << endl;
 }
 
+// ------------------ padalinti studentus ------------------
 StudentGroups padalinti_studentus(const vector<Studentas>& grupe) {
     StudentGroups groups;
     for (const auto& stud : grupe) {
@@ -165,6 +195,7 @@ StudentGroups padalinti_studentus(const vector<Studentas>& grupe) {
     return groups;
 }
 
+// ------------------ issaugoti i faila ------------------
 void issaugoti_i_faila(const vector<Studentas>& grupe, const string& failo_vardas) {
     ofstream out(failo_vardas);
     if (!out) {
@@ -186,6 +217,7 @@ void issaugoti_i_faila(const vector<Studentas>& grupe, const string& failo_varda
     }
 }
 
+// ------------------ generuoti faila ------------------
 void generuoti_studentu_faila(long long n, int nd_count) {
     ofstream fout("studentai_" + to_string(n) + ".txt");
     if (!fout) {
@@ -207,10 +239,11 @@ void generuoti_studentu_faila(long long n, int nd_count) {
     cout << "Sugeneruotas failas studentai_" << n << ".txt su " << n << " studentais.\n";
 }
 
+// ------------------ generuoti atsitiktini studenta ------------------
 Studentas generuoti_atsitiktini_studenta() {
     Studentas s;
-    s.vardas = "Vardas" + to_string(rand() % 1000);
-    s.pavarde = "Pavarde" + to_string(rand() % 1000);
+    s.vardas = "Vardas" + to_string(rand() % 1000000);
+    s.pavarde = "Pavarde" + to_string(rand() % 1000000);
     int kiek = rand() % 10 + 1;
     int sum = 0;
     for (int i = 0; i < kiek; i++) {
@@ -219,13 +252,15 @@ Studentas generuoti_atsitiktini_studenta() {
         sum += paz;
     }
     s.egzaminas = rand() % 10 + 1;
-    s.gal_rezultatas = double(sum) / double(kiek) * 0.4 + s.egzaminas * 0.6;
+    if (kiek == 0) s.gal_rezultatas = s.egzaminas;
+    else s.gal_rezultatas = double(sum) / double(kiek) * 0.4 + s.egzaminas * 0.6;
 
     vector<int> tmp = s.paz;
     tmp.push_back(s.egzaminas);
     sort(tmp.begin(), tmp.end());
-    int size = tmp.size();
-    if (size % 2 != 0) s.mediana = tmp[size / 2];
+    int size = static_cast<int>(tmp.size());
+    if (size == 0) s.mediana = 0.0;
+    else if (size % 2 != 0) s.mediana = tmp[size / 2];
     else s.mediana = (tmp[(size - 1) / 2] + tmp[size / 2]) / 2.0;
 
     return s;
