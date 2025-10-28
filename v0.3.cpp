@@ -69,24 +69,71 @@ int main() {
             break;
         }
         case 6: {
-            cout << "Failo pavadinimas: ";
-            cin >> fail;
-            skaityti_is_failo(grupe, fail);
-            auto start = chrono::high_resolution_clock::now();
-            StudentGroups g = padalinti_studentus(grupe);
-            auto end = chrono::high_resolution_clock::now();
-            double padalijimo = chrono::duration<double>(end - start).count();
+    cout << "Iveskite failo pavadinima, kuri norite dalinti: ";
+    cin >> fail;
 
-            auto startW = chrono::high_resolution_clock::now();
-            issaugoti_i_faila(g.kietiakiai, "kietiakiai_" + fail);
-            issaugoti_i_faila(g.vargsiukai, "vargsiukai_" + fail);
-            auto endW = chrono::high_resolution_clock::now();
-            double irasymo = chrono::duration<double>(endW - startW).count();
+    list<Studentas> grupe;
+    skaityti_is_failo(grupe, fail);
 
-            cout << "Padalijimo laikas: " << padalijimo << " s\n";
-            cout << "Irasymo laikas: " << irasymo << " s\n";
-            break;
-        }
+    if (grupe.empty()) {
+        cout << "Nera studentu faile arba nepavyko nuskaityti." << endl;
+        break;
+    }
+
+    int rusiavimas;
+    cout << "Pagal ka rusioti studentus? (1 - pagal varda, 0 - pagal galutini bala): ";
+    cin >> rusiavimas;
+
+    auto start_rusiavimas = chrono::high_resolution_clock::now();
+
+    // --- Padalijame studentus i kietiakiai ir vargsiukai ---
+    StudentGroups groups = padalinti_studentus(grupe);
+
+    // --- Rikiavimas pagal pasirinkimą ---
+    if (rusiavimas == 1) {
+        groups.kietiakiai.sort([](const Studentas& a, const Studentas& b){
+            return a.vardas < b.vardas;
+        });
+        groups.vargsiukai.sort([](const Studentas& a, const Studentas& b){
+            return a.vardas < b.vardas;
+        });
+    } else {
+        groups.kietiakiai.sort([](const Studentas& a, const Studentas& b){
+            return a.gal_rezultatas > b.gal_rezultatas;
+        });
+        groups.vargsiukai.sort([](const Studentas& a, const Studentas& b){
+            return a.gal_rezultatas > b.gal_rezultatas;
+        });
+    }
+
+    auto end_rusiavimas = chrono::high_resolution_clock::now();
+    double laikas_rusiavimas = chrono::duration<double>(end_rusiavimas - start_rusiavimas).count();
+
+    // --- Generuojame failų pavadinimus ---
+    size_t pos1 = fail.find_last_of('_');
+    size_t pos2 = fail.find_last_of('.');
+    string number = (pos1 != string::npos && pos2 != string::npos && pos2 > pos1)
+                    ? fail.substr(pos1 + 1, pos2 - pos1 - 1)
+                    : "output";
+
+    auto start_irasymas = chrono::high_resolution_clock::now();
+
+    // --- Įrašome į failus ---
+    issaugoti_i_faila(groups.kietiakiai, "kietiakiai_" + number + ".txt");
+    issaugoti_i_faila(groups.vargsiukai, "vargsiukai_" + number + ".txt");
+
+    auto end_irasymas = chrono::high_resolution_clock::now();
+    double laikas_irasymas = chrono::duration<double>(end_irasymas - start_irasymas).count();
+
+    cout << "Studentai issaugoti i kietiakiai_" << number 
+         << ".txt ir vargsiukai_" << number << ".txt" << endl;
+
+    cout << "Rusiavimo laikas: " << laikas_rusiavimas << " s" << endl;
+    cout << "Irasymo i faila laikas: " << laikas_irasymas << " s" << endl;
+    break;
+}
+
+
         case 7: {
     vector<long long> sizes = {1000, 10000, 100000, 1000000, 10000000};
     cout << fixed << setprecision(3);

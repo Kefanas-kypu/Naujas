@@ -79,7 +79,7 @@ Studentas stud_iv() {
     else
         pirmas.gal_rezultatas = double(sum) / n * 0.4 + pirmas.egzaminas * 0.6;
 
-    // Apskaičiuojame medianą (paverčiame į vector, kad galėtume surikiuoti)
+    // Apskaičiuojame medianą (naudojame vector laikinas, nes list negalima indeksuoti)
     std::vector<int> paz_temp(pirmas.paz.begin(), pirmas.paz.end());
     paz_temp.push_back(pirmas.egzaminas);
     std::sort(paz_temp.begin(), paz_temp.end());
@@ -94,6 +94,7 @@ Studentas stud_iv() {
 
     return pirmas;
 }
+
 
 
 // --- Spausdinimas lentelės forma ---
@@ -139,28 +140,50 @@ void skaityti_is_failo(list<Studentas>& grupe, const string& failo_vardas) {
     }
 
     string eil;
-    getline(fd, eil); // praleidžiam antraštę
+    getline(fd, eil); // praleidžiame antraštę
 
     grupe.clear();
+
     while (getline(fd, eil)) {
         stringstream ss(eil);
         Studentas s;
         ss >> s.vardas >> s.pavarde;
 
-        int paz;
         s.paz.clear();
-        while (ss >> paz)
+        int paz;
+        while (ss >> paz) {
             s.paz.push_back(paz);
+        }
 
         if (!s.paz.empty()) {
-            s.egzaminas = s.paz.back();
+            s.egzaminas = s.paz.back(); // paskutinis pažymys yra egzaminas
             s.paz.pop_back();
-        } else s.egzaminas = 0;
+        } else {
+            s.egzaminas = 0;
+        }
 
+        // --- Galutinis rezultatas (vidurkis) ---
         s.gal_rezultatas = 0.4 * vidurkis(s.paz) + 0.6 * s.egzaminas;
+
+        // --- Mediana ---
+        std::vector<int> paz_temp(s.paz.begin(), s.paz.end());
+        paz_temp.push_back(s.egzaminas); // įtraukiame egzaminą į medianą
+        std::sort(paz_temp.begin(), paz_temp.end());
+
+        int kiek = paz_temp.size();
+        if (kiek == 0) {
+            s.mediana = 0.0;
+        } else if (kiek % 2 != 0) {
+            s.mediana = double(paz_temp[kiek / 2]);
+        } else {
+            s.mediana = double(paz_temp[(kiek - 1) / 2] + paz_temp[kiek / 2]) / 2.0;
+        }
+
+        // --- Tik po visų skaičiavimų dedame į listą ---
         grupe.push_back(s);
     }
 }
+
 
 // --- Failo generavimas ---
 void generuoti_studentu_faila(long long n, int nd_kiekis) {
@@ -205,16 +228,25 @@ StudentGroups padalinti_studentus(const list<Studentas>& grupe) {
 }
 
 // --- Įrašymas į failą ---
-void issaugoti_i_faila(const list<Studentas>& grupe, const string& failo_vardas) {
-    ofstream fr(failo_vardas);
-    fr << left << setw(15) << "Vardas"
-       << setw(15) << "Pavarde"
-       << setw(15) << "Galutinis" << endl;
-    fr << string(45, '-') << endl;
+// --- Įrašymas į failą (list versija) ---
+void issaugoti_i_faila(const std::list<Studentas>& grupe, const std::string& failo_vardas) {
+    std::ofstream out(failo_vardas);
+    if (!out) {
+        std::cout << "Nepavyko sukurti failo: " << failo_vardas << std::endl;
+        return;
+    }
 
-    for (const auto& s : grupe) {
-        fr << left << setw(15) << s.vardas
-           << setw(15) << s.pavarde
-           << setw(15) << fixed << setprecision(2) << s.gal_rezultatas << endl;
+    out << std::setw(10) << std::left << "Vardas" << "|"
+        << std::setw(15) << std::right << "Pavarde" << "|"
+        << std::setw(20) << std::right << "Galutinis (Vid.)" << "|"
+        << std::setw(20) << std::right << "Galutinis (Med.)" << std::endl;
+    out << "--------------------------------------------------------------------" << std::endl;
+
+    for (const auto& stud : grupe) {
+        out << std::setw(11) << std::left << stud.vardas << "|"
+            << std::setw(15) << std::right << stud.pavarde << "|"
+            << std::fixed << std::setprecision(2) << std::setw(20) << std::right << stud.gal_rezultatas << "|"
+            << std::fixed << std::setprecision(2) << std::setw(20) << std::right << stud.mediana << std::endl;
     }
 }
+
