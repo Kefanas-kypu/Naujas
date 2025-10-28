@@ -18,44 +18,105 @@ double vidurkis(const vector<int>& nd) {
 
 // --- Studentų įvedimas ranka ---
 Studentas stud_iv() {
-    Studentas s;
-    cout << "Iveskite varda: ";
-    cin >> s.vardas;
-    cout << "Iveskite pavarde: ";
-    cin >> s.pavarde;
+    Studentas pirmas;
+    int sum = 0;
+    int laik_paz;
 
-    int kiekis;
-    cout << "Kiek namu darbu? ";
-    cin >> kiekis;
+    std::cout << "Iveskite studento duomenis" << std::endl;
+    std::cout << "Vardas: ";
+    std::cin >> pirmas.vardas;
+    std::cout << "Pavarde: ";
+    std::cin >> pirmas.pavarde;
 
-    s.paz.clear();
-    for (int i = 0; i < kiekis; i++) {
-        int paz;
-        cout << "ND " << i + 1 << ": ";
-        cin >> paz;
-        s.paz.push_back(paz);
+    int generuoti;
+    std::cout << "Ar pazymius generuoti atsitiktinai? (1 - generuoti, 0 - vesti ranka): ";
+    std::cin >> generuoti;
+
+    if (generuoti == 1) {
+        int kiek = rand() % 10 + 1;
+        for (int i = 0; i < kiek; i++) {
+            int random_paz = rand() % 10 + 1;
+            pirmas.paz.push_back(random_paz);
+            sum += random_paz;
+        }
+        pirmas.egzaminas = rand() % 10 + 1;
+    } else {
+        int kl;
+        std::cout << "Ar zinote, kiek pazymiu turi studentas? (1 - taip, 0 - ne): ";
+        std::cin >> kl;
+
+        if (kl == 0) {
+            int laik_paz_local = -1;
+            while (laik_paz_local != 0) {
+                std::cout << "Iveskite pazymi (arba 0, jei daugiau pazymiu nera): ";
+                std::cin >> laik_paz_local;
+                if (laik_paz_local != 0) {
+                    pirmas.paz.push_back(laik_paz_local);
+                    sum += laik_paz_local;
+                }
+            }
+            std::cout << "Iveskite egzamino pazymi: ";
+            std::cin >> pirmas.egzaminas;
+        } else {
+            int kiek_paz;
+            std::cout << "Kiek pazymiu turi studentas? ";
+            std::cin >> kiek_paz;
+
+            for (int a = 0; a < kiek_paz; a++) {
+                std::cout << a + 1 << ": ";
+                std::cin >> laik_paz;
+                pirmas.paz.push_back(laik_paz);
+                sum += laik_paz;
+            }
+            std::cout << "Iveskite egzamino pazymi: ";
+            std::cin >> pirmas.egzaminas;
+        }
     }
 
-    cout << "Iveskite egzamino rezultata: ";
-    cin >> s.egzaminas;
+    int n = pirmas.paz.size();
+    if (n == 0)
+        pirmas.gal_rezultatas = pirmas.egzaminas;
+    else
+        pirmas.gal_rezultatas = double(sum) / n * 0.4 + pirmas.egzaminas * 0.6;
 
-    s.gal_rezultatas = 0.4 * vidurkis(s.paz) + 0.6 * s.egzaminas;
-    return s;
+    // Apskaičiuojame medianą (paverčiame į vector, kad galėtume surikiuoti)
+    std::vector<int> paz_temp(pirmas.paz.begin(), pirmas.paz.end());
+    paz_temp.push_back(pirmas.egzaminas);
+    std::sort(paz_temp.begin(), paz_temp.end());
+
+    int kiek = paz_temp.size();
+    if (kiek == 0)
+        pirmas.mediana = 0.0;
+    else if (kiek % 2 != 0)
+        pirmas.mediana = double(paz_temp[kiek / 2]);
+    else
+        pirmas.mediana = double(paz_temp[(kiek - 1) / 2] + paz_temp[kiek / 2]) / 2.0;
+
+    return pirmas;
 }
+
 
 // --- Spausdinimas lentelės forma ---
-void spausdinti_grupe(const list<Studentas>& grupe) {
-    cout << left << setw(15) << "Vardas"
-         << setw(15) << "Pavarde"
-         << setw(15) << "Galutinis (vid.)" << endl;
-    cout << string(45, '-') << endl;
+void spausdinti_grupe(const std::list<Studentas>& grupe) {
+    if (grupe.empty()) {
+        std::cout << "Nera studentu" << std::endl;
+        return;
+    }
 
-    for (const auto& s : grupe) {
-        cout << left << setw(15) << s.vardas
-             << setw(15) << s.pavarde
-             << setw(15) << fixed << setprecision(2) << s.gal_rezultatas << endl;
+    std::cout << std::setw(10) << std::left << "Vardas" << "|"
+              << std::setw(15) << std::right << "Pavarde" << "|"
+              << std::setw(20) << std::right << "Galutinis (Vid.)" << "|"
+              << std::setw(20) << std::right << "Galutinis (Med.)" << std::endl;
+    std::cout << "--------------------------------------------------------------------" << std::endl;
+
+    for (const auto& stud : grupe) {
+        std::cout << std::setw(11) << std::left << stud.vardas << "|"
+                  << std::setw(15) << std::right << stud.pavarde << "|"
+                  << std::fixed << std::setprecision(2) << std::setw(20) << std::right << stud.gal_rezultatas << "|"
+                  << std::fixed << std::setprecision(2) << std::setw(20) << std::right << stud.mediana << std::endl;
     }
 }
+
 
 void rikiuoti_studentus(list<Studentas>& grupe, bool pagal_varda) {
     if (pagal_varda) {

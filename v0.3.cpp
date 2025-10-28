@@ -59,7 +59,7 @@ int main() {
             long long n; int nd;
             cout << "Kiek studentu sugeneruoti? ";
             cin >> n;
-            cout << "Kiek ND kiekvienam? ";
+            cout << "Kiek ND kiekvienam studentui? ";
             cin >> nd;
             auto start = chrono::high_resolution_clock::now();
             generuoti_studentu_faila(n, nd);
@@ -131,10 +131,10 @@ int main() {
         // 🔹 Bendra laiko suvestinė
         double laikas_total = laikas_nuskaitymas + laikas_rikiavimas + laikas_padalijimas + laikas_irasymas;
 
-        cout << "Nuskaitymas: " << laikas_nuskaitymas << " s\n";
-        cout << "Rikiavimas: " << laikas_rikiavimas << " s\n";
-        cout << "Padalijimas: " << laikas_padalijimas << " s\n";
-        cout << "Irasymas: " << laikas_irasymas << " s\n";
+        cout << "Failo nuskaitymo laikas: " << laikas_nuskaitymas << " s\n";
+        cout << "Rikiavimo laikas: " << laikas_rikiavimas << " s\n";
+        cout << "Padalijimo i vargsiukus ir kietakius laikas: " << laikas_padalijimas << " s\n";
+        cout << "Irasymo laikas i failus laikas: " << laikas_irasymas << " s\n";
         cout << "Bendras laikas: " << laikas_total << " s\n";
     }
     break;
