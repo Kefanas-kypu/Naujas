@@ -86,10 +86,8 @@ int main() {
 
     auto start_rusiavimas = chrono::high_resolution_clock::now();
 
-    // --- Padalijame studentus i kietiakiai ir vargsiukai ---
     StudentGroups groups = padalinti_studentus(grupe);
 
-    // --- Rikiavimas pagal pasirinkimą ---
     if (rusiavimas == 1) {
         groups.kietiakiai.sort([](const Studentas& a, const Studentas& b){
             return a.vardas < b.vardas;
@@ -109,7 +107,6 @@ int main() {
     auto end_rusiavimas = chrono::high_resolution_clock::now();
     double laikas_rusiavimas = chrono::duration<double>(end_rusiavimas - start_rusiavimas).count();
 
-    // --- Generuojame failų pavadinimus ---
     size_t pos1 = fail.find_last_of('_');
     size_t pos2 = fail.find_last_of('.');
     string number = (pos1 != string::npos && pos2 != string::npos && pos2 > pos1)
@@ -118,7 +115,6 @@ int main() {
 
     auto start_irasymas = chrono::high_resolution_clock::now();
 
-    // --- Įrašome į failus ---
     issaugoti_i_faila(groups.kietiakiai, "kietiakiai_" + number + ".txt");
     issaugoti_i_faila(groups.vargsiukai, "vargsiukai_" + number + ".txt");
 
@@ -143,7 +139,6 @@ int main() {
         string fail_name = "studentai_" + to_string(n) + ".txt";
         list<Studentas> test_grupe;
 
-        // 🔹 Nuskaitymas į list
         auto start_nuskaitymas = chrono::high_resolution_clock::now();
         skaityti_is_failo(test_grupe, fail_name);   // perrašyta funkcija Funkcijos_list.cpp
         auto end_nuskaitymas = chrono::high_resolution_clock::now();
@@ -154,7 +149,6 @@ int main() {
             continue;
         }
 
-        // 🔹 Rikiavimas (naudojamas list.sort)
         auto start_rikiavimas = chrono::high_resolution_clock::now();
         test_grupe.sort([](const Studentas& a, const Studentas& b) {
             return a.gal_rezultatas < b.gal_rezultatas;
@@ -162,20 +156,17 @@ int main() {
         auto end_rikiavimas = chrono::high_resolution_clock::now();
         double laikas_rikiavimas = chrono::duration<double>(end_rikiavimas - start_rikiavimas).count();
 
-        // 🔹 Padalijimas į dvi grupes (funkcija su list)
         auto start_padalijimas = chrono::high_resolution_clock::now();
         StudentGroups groups = padalinti_studentus(test_grupe);
         auto end_padalijimas = chrono::high_resolution_clock::now();
         double laikas_padalijimas = chrono::duration<double>(end_padalijimas - start_padalijimas).count();
 
-        // 🔹 Įrašymas į failus
         auto start_irasymas = chrono::high_resolution_clock::now();
         issaugoti_i_faila(groups.kietiakiai, "kietiakiai_" + to_string(n) + ".txt");
         issaugoti_i_faila(groups.vargsiukai, "vargsiukai_" + to_string(n) + ".txt");
         auto end_irasymas = chrono::high_resolution_clock::now();
         double laikas_irasymas = chrono::duration<double>(end_irasymas - start_irasymas).count();
 
-        // 🔹 Bendra laiko suvestinė
         double laikas_total = laikas_nuskaitymas + laikas_rikiavimas + laikas_padalijimas + laikas_irasymas;
 
         cout << "Failo nuskaitymo laikas: " << laikas_nuskaitymas << " s\n";

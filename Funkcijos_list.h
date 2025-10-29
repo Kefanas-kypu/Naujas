@@ -13,8 +13,6 @@ struct StudentGroups {
     std::list<Studentas> vargsiukai;
 };
 
-// --- Funkcijų deklaracijos ---
-
 Studentas stud_iv();  // vartotojo įvedimas
 void spausdinti_grupe(const std::list<Studentas>& grupe);
 void skaityti_is_failo(std::list<Studentas>& grupe, const std::string& failo_vardas);

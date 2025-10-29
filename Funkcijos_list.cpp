@@ -8,7 +8,6 @@
 
 using namespace std;
 
-// --- Pagalbinė funkcija vidurkiui ---
 double vidurkis(const vector<int>& nd) {
     if (nd.empty()) return 0;
     double suma = 0;
@@ -16,7 +15,6 @@ double vidurkis(const vector<int>& nd) {
     return suma / nd.size();
 }
 
-// --- Studentų įvedimas ranka ---
 Studentas stud_iv() {
     Studentas pirmas;
     int sum = 0;
@@ -79,7 +77,6 @@ Studentas stud_iv() {
     else
         pirmas.gal_rezultatas = double(sum) / n * 0.4 + pirmas.egzaminas * 0.6;
 
-    // Apskaičiuojame medianą (naudojame vector laikinas, nes list negalima indeksuoti)
     std::vector<int> paz_temp(pirmas.paz.begin(), pirmas.paz.end());
     paz_temp.push_back(pirmas.egzaminas);
     std::sort(paz_temp.begin(), paz_temp.end());
@@ -97,7 +94,6 @@ Studentas stud_iv() {
 
 
 
-// --- Spausdinimas lentelės forma ---
 void spausdinti_grupe(const std::list<Studentas>& grupe) {
     if (grupe.empty()) {
         std::cout << "Nera studentu" << std::endl;
@@ -131,7 +127,6 @@ void rikiuoti_studentus(list<Studentas>& grupe, bool pagal_varda) {
     }
 }
 
-// --- Skaitymas iš failo į list ---
 void skaityti_is_failo(list<Studentas>& grupe, const string& failo_vardas) {
     ifstream fd(failo_vardas);
     if (!fd.is_open()) {
@@ -140,7 +135,7 @@ void skaityti_is_failo(list<Studentas>& grupe, const string& failo_vardas) {
     }
 
     string eil;
-    getline(fd, eil); // praleidžiame antraštę
+    getline(fd, eil);
 
     grupe.clear();
 
@@ -156,18 +151,16 @@ void skaityti_is_failo(list<Studentas>& grupe, const string& failo_vardas) {
         }
 
         if (!s.paz.empty()) {
-            s.egzaminas = s.paz.back(); // paskutinis pažymys yra egzaminas
+            s.egzaminas = s.paz.back();
             s.paz.pop_back();
         } else {
             s.egzaminas = 0;
         }
 
-        // --- Galutinis rezultatas (vidurkis) ---
         s.gal_rezultatas = 0.4 * vidurkis(s.paz) + 0.6 * s.egzaminas;
 
-        // --- Mediana ---
         std::vector<int> paz_temp(s.paz.begin(), s.paz.end());
-        paz_temp.push_back(s.egzaminas); // įtraukiame egzaminą į medianą
+        paz_temp.push_back(s.egzaminas); 
         std::sort(paz_temp.begin(), paz_temp.end());
 
         int kiek = paz_temp.size();
@@ -179,13 +172,10 @@ void skaityti_is_failo(list<Studentas>& grupe, const string& failo_vardas) {
             s.mediana = double(paz_temp[(kiek - 1) / 2] + paz_temp[kiek / 2]) / 2.0;
         }
 
-        // --- Tik po visų skaičiavimų dedame į listą ---
         grupe.push_back(s);
     }
 }
 
-
-// --- Failo generavimas ---
 void generuoti_studentu_faila(long long n, int nd_kiekis) {
     string failo_vardas = "studentai_" + to_string(n) + ".txt";
     ofstream fr(failo_vardas);
@@ -214,7 +204,6 @@ void generuoti_studentu_faila(long long n, int nd_kiekis) {
     fr.close();
 }
 
-// --- Studentų padalijimas ---
 StudentGroups padalinti_studentus(const list<Studentas>& grupe) {
     StudentGroups groups;
 
@@ -227,8 +216,6 @@ StudentGroups padalinti_studentus(const list<Studentas>& grupe) {
     return groups;
 }
 
-// --- Įrašymas į failą ---
-// --- Įrašymas į failą (list versija) ---
 void issaugoti_i_faila(const std::list<Studentas>& grupe, const std::string& failo_vardas) {
     std::ofstream out(failo_vardas);
     if (!out) {
