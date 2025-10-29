@@ -25,11 +25,13 @@ int main() {
         cin >> pasirinkimas;
 
         switch(pasirinkimas) {
-        case 1: {
-            Studentas s = stud_iv();
-            grupe.push_back(s);
-            break;
-        }
+case 1: {
+    Studentas s = stud_iv();
+    std::cout << "Objekto adresas: " << &s << std::endl; // <-- čia pridėti
+    grupe.push_back(s);
+    break;
+}
+
         case 2: {
             if (grupe.empty()) {
                 cout << "Nera studentu duomenu!" << endl;

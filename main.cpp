@@ -14,7 +14,7 @@ using namespace std;
 int main() {
     srand(static_cast<unsigned int>(time(0)));
 
-    list<Studentas> grupe;
+    vector<Studentas> grupe;
     string fail;
     int pasirinkimas;
 
@@ -32,24 +32,24 @@ int main() {
 
         switch(pasirinkimas) {
 
-        case 1: {
-            Studentas s = stud_iv();
-            grupe.push_back(s);
-            cout << "Studento objektas saugomas adrese: " << &(*grupe.rbegin()) << endl;
-            break;
-        }
+         case 1: {
+    Studentas s = stud_iv();
+    std::cout << "Objekto adresas: " << &s << std::endl; // <-- čia
+    grupe.push_back(s);
+    break;
+}
 
-        case 2: {
-            if (grupe.empty()) {
-                cout << "Nera studentu duomenu!" << endl;
-                break;
-            }
-            grupe.sort([](const Studentas& a, const Studentas& b){
-                return a.vardas < b.vardas;
-            });
-            spausdinti_grupe(vector<Studentas>(grupe.begin(), grupe.end()));
-            break;
-        }
+       case 2: {
+    if (grupe.empty()) {
+        cout << "Nera studentu duomenu!" << endl;
+        break;
+    }
+    // Naudojamas vector ir std::sort per surusiuoti_pagal_varda funkciją
+    surusiuoti_pagal_varda(grupe);
+    spausdinti_grupe(grupe);
+    break;
+}
+
 
         case 3:
             cout << "Programa baigta." << endl;
@@ -102,8 +102,7 @@ int main() {
             cin >> rusiavimas;
 
             auto start_rusiavimas = chrono::high_resolution_clock::now();
-            vector<Studentas> tmp_vec(grupe.begin(), grupe.end());
-            StudentGroups groups = padalinti_studentus(tmp_vec);
+            StudentGroups groups = padalinti_studentus(grupe);
 
             if (rusiavimas == 1) {
                 sort(groups.kietiakiai.begin(), groups.kietiakiai.end(),
@@ -140,54 +139,53 @@ int main() {
         }
 
         case 7: {
-            vector<long long> sizes = {1000, 10000, 100000, 1000000, 10000000};
-            cout << fixed << setprecision(3);
+    vector<long long> sizes = {1000, 10000, 100000, 1000000, 10000000};
+    cout << fixed << setprecision(3);
 
-            for (auto n : sizes) {
-                cout << "\n--- Testuojama su failu studentai_" << n << ".txt ---\n";
-                string fail_name = "studentai_" + to_string(n) + ".txt";
-                list<Studentas> test_grupe;
+    for (auto n : sizes) {
+        cout << "\n--- Testuojama su failu studentai_" << n << ".txt ---\n";
+        string fail_name = "studentai_" + to_string(n) + ".txt";
+        vector<Studentas> test_grupe;
 
-                auto start_nuskaitymas = chrono::high_resolution_clock::now();
-                vector<Studentas> tmp;
-                skaityti_is_failo(tmp, fail_name);
-                test_grupe.assign(tmp.begin(), tmp.end());
-                auto end_nuskaitymas = chrono::high_resolution_clock::now();
-                double laikas_nuskaitymas = chrono::duration<double>(end_nuskaitymas - start_nuskaitymas).count();
+        auto start_nuskaitymas = chrono::high_resolution_clock::now();
+        skaityti_is_failo(test_grupe, fail_name);
+        auto end_nuskaitymas = chrono::high_resolution_clock::now();
+        double laikas_nuskaitymas = chrono::duration<double>(end_nuskaitymas - start_nuskaitymas).count();
 
-                if (test_grupe.empty()) {
-                    cout << "Failas " << fail_name << " tuscias arba nepavyko nuskaityti." << endl;
-                    continue;
-                }
-
-                auto start_rikiavimas = chrono::high_resolution_clock::now();
-                test_grupe.sort([](const Studentas& a, const Studentas& b){
-                    return a.gal_rezultatas < b.gal_rezultatas;
-                });
-                auto end_rikiavimas = chrono::high_resolution_clock::now();
-                double laikas_rikiavimas = chrono::duration<double>(end_rikiavimas - start_rikiavimas).count();
-
-                auto start_padalijimas = chrono::high_resolution_clock::now();
-                StudentGroups groups = padalinti_studentus(vector<Studentas>(test_grupe.begin(), test_grupe.end()));
-                auto end_padalijimas = chrono::high_resolution_clock::now();
-                double laikas_padalijimas = chrono::duration<double>(end_padalijimas - start_padalijimas).count();
-
-                auto start_irasymas = chrono::high_resolution_clock::now();
-                issaugoti_i_faila(groups.kietiakiai, "kietiakiai_" + to_string(n) + ".txt");
-                issaugoti_i_faila(groups.vargsiukai, "vargsiukai_" + to_string(n) + ".txt");
-                auto end_irasymas = chrono::high_resolution_clock::now();
-                double laikas_irasymas = chrono::duration<double>(end_irasymas - start_irasymas).count();
-
-                double laikas_total = laikas_nuskaitymas + laikas_rikiavimas + laikas_padalijimas + laikas_irasymas;
-
-                cout << "Nuskaitymas: " << laikas_nuskaitymas << " s\n";
-                cout << "Rikiavimas: " << laikas_rikiavimas << " s\n";
-                cout << "Padalijimas: " << laikas_padalijimas << " s\n";
-                cout << "Irasymas: " << laikas_irasymas << " s\n";
-                cout << "Bendras laikas: " << laikas_total << " s\n";
-            }
-            break;
+        if (test_grupe.empty()) {
+            cout << "Failas " << fail_name << " tuscias arba nepavyko nuskaityti." << endl;
+            continue;
         }
+
+        auto start_rikiavimas = chrono::high_resolution_clock::now();
+        sort(test_grupe.begin(), test_grupe.end(), [](const Studentas& a, const Studentas& b){
+            return a.gal_rezultatas < b.gal_rezultatas;
+        });
+        auto end_rikiavimas = chrono::high_resolution_clock::now();
+        double laikas_rikiavimas = chrono::duration<double>(end_rikiavimas - start_rikiavimas).count();
+
+        auto start_padalijimas = chrono::high_resolution_clock::now();
+        StudentGroups groups = padalinti_studentus(test_grupe);
+        auto end_padalijimas = chrono::high_resolution_clock::now();
+        double laikas_padalijimas = chrono::duration<double>(end_padalijimas - start_padalijimas).count();
+
+        auto start_irasymas = chrono::high_resolution_clock::now();
+        issaugoti_i_faila(groups.kietiakiai, "kietiakiai_" + to_string(n) + ".txt");
+        issaugoti_i_faila(groups.vargsiukai, "vargsiukai_" + to_string(n) + ".txt");
+        auto end_irasymas = chrono::high_resolution_clock::now();
+        double laikas_irasymas = chrono::duration<double>(end_irasymas - start_irasymas).count();
+
+        double laikas_total = laikas_nuskaitymas + laikas_rikiavimas + laikas_padalijimas + laikas_irasymas;
+
+        cout << "Nuskaitymas: " << laikas_nuskaitymas << " s\n";
+        cout << "Rikiavimas: " << laikas_rikiavimas << " s\n";
+        cout << "Padalijimas: " << laikas_padalijimas << " s\n";
+        cout << "Irasymas: " << laikas_irasymas << " s\n";
+        cout << "Bendras laikas: " << laikas_total << " s\n";
+    }
+    break;
+}
+
 
         default:
             cout << "Neteisingas pasirinkimas." << endl;
