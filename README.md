@@ -11,23 +11,25 @@
 | **Diskas**            | SSD                                                            |
 | **Operacinė sistema** | Windows 10                                                    |
 
-> **Pastaba:** visi rezultatai buvo matuojami naudojant tuos pačius failus su 1000, 10000, 100000, 1000000 ir 10000000 įrašų, kaip ir v0.2 versijoje.
-
 ---
 
 ##  Testavimo metodika
 
 1. Programos veikimas buvo tikrinamas tiek su `std::vector<Studentas>`, tiek su `std::list<Studentas>`.  
-2. Matavimai apėmė:
-   - studentų rūšiavimą į dvi grupes/kategorijas;
-   - duomenų įrašymą į failus;
+2. Rankinio įvedimo metu programa išveda kiekvieno **Studentas** objekto atminties adresą.
+![Rankinio įvedimo išvedimas su objekto adresu](Objekto_adresas.png)
+3. Matavimai apėmė:
+   - studentų nuskaitymą iš pradinio failo.
+   - studentų rikiavimą didėjimo tvarka.
+   - studentų padalijimą į skirtingus failus.
+   - duomenų įrašymą į failus.
    - bendrą programos vykdymo laiką.  
-3. Kiekvienam failui buvo fiksuojami laikai (`s`) ir, vėliau, bus apskaičiuotas kelių bandymų vidurkis, kad būtų patikimesni rezultatai.
+4. Kiekvienam failui buvo fiksuojami laikai ir apskaičiuotas kelių bandymų vidurkis, kad būtų patikimesni rezultatai.
 
-##  Rezultatai – `std::list<Studentas>`
+##  Rezultatai – std::list<Studentas>
 
-Toliau pateikiami testavimo rezultatai, kai konteineriui buvo naudojamas **`std::list<Studentas>`**.  
-Kiekvienas testas buvo kartojamas kelis kartus, o lentelėje pateikti **vidutiniai laikai (sekundėmis)**.
+Toliau pateikiami testavimo rezultatai, kai konteineriui buvo naudojamas **std::list<Studentas>**.  
+Kiekvienas testas buvo kartojamas penkis kartus, o lentelėje pateikti vidurkiai sekundėmis.
 
 | Failas             | Nuskaitymas (s) | Rikiavimas (s) | Padalijimas (s) | Įrašymas (s) | **Bendras laikas (s)** |
 | ------------------ | --------------- | -------------- | --------------- | ------------ | ---------------------- |
@@ -37,23 +39,21 @@ Kiekvienas testas buvo kartojamas kelis kartus, o lentelėje pateikti **vidutini
 | studentai_1000000  | 3.379           | 0.970          | 1.411           | 6.839        | **12.620**             |
 | studentai_10000000 | 34.220          | 15.929         | 14.842          | 51.843       | **116.233**            |
 
+![List konteinerio testų išvedimas](Testavimas_list.png)
 ---
 
 ### Pastabos
 
-- Matyti, kad **programos laikas didėja beveik tiesiškai** didėjant įrašų kiekiui, tačiau po 1 mln. įrašų pradeda ryškėti I/O (įrašymo ir skaitymo) proceso dominavimas.
-- **Didžiausia laiko dalis** nuo 100 tūkst. įrašų ir daugiau tenka **failo įrašymui** – šis procesas tampa pagrindiniu siaurąja vieta (bottleneck).
-- `list` konteinerio atveju **rikiavimas ir padalijimas** trunka žymiai ilgiau nei mažesnių dydžių failuose, nes elementų prieigos sudėtingumas yra didesnis nei `vector`.
+- Matyti, kad programos laikas didėja beveik tiesiškai didėjant įrašų kiekiui, tačiau po 1 milijono įrašų galime pastėbėti, kad ilgiausiai trunka įrašymas ir nuskaitymas.
+- Didžiausia laiko dalis 100 tūkst. įrašų ir daugiau tenka failo **įrašymui** – šis procesas tampa pagrindiniu.
+- **list** konteinerio atveju **rikiavimas ir padalijimas** trunka žymiai ilgiau nei mažesniuose failuose, nes elementų prieigos sudėtingumas yra didesnis nei vector.
 
 ---
 
-> 💡 Kitoje dalyje bus pateikti `std::vector<Studentas>` rezultatai ir tiesioginis jų palyginimas su `list` konteineriu (lentelė + grafikas).
+##  Rezultatai – std::vector<Studentas>
 
-
-##  Rezultatai – `std::vector<Studentas>`
-
-Toliau pateikiami testavimo rezultatai, kai konteineriui buvo naudojamas **`std::vector<Studentas>`**.  
-Kiekvienas testas buvo kartojamas kelis kartus, o lentelėje pateikti **vidutiniai laikai (sekundėmis)**.
+Toliau pateikiami testavimo rezultatai, kai konteineriui buvo naudojamas **std::vector<Studentas>**.  
+Kiekvienas testas buvo kartojamas penkis kartus, o lentelėje pateikti vidurkiai sekundėmis.
 
 | Failas             | Nuskaitymas (s) | Rikiavimas (s) | Padalijimas (s) | Įrašymas (s) | **Bendras laikas (s)** |
 | ------------------ | --------------- | -------------- | --------------- | ------------ | ---------------------- |
@@ -67,10 +67,10 @@ Kiekvienas testas buvo kartojamas kelis kartus, o lentelėje pateikti **vidutini
 
 ### Pastabos
 
-- `vector` konteinerio atveju **rikiavimas vyksta žymiai greičiau nei `list`**, ypač dideliuose failuose, nes elementai yra saugomi **tęstinėje atminties vietoje** ir `std::sort` gali efektyviai naudoti indeksus.
-- Didžiausi laikai ir toliau tenka **įrašymui į failą** – I/O procesas tampa pagrindine laiko sąnaudų dalimi.
-- Skirtumas tarp `vector` ir `list` konteinerių ryškiausias **rikiavimo ir padalijimo etapuose**, ypač didesniuose failuose.
+- vector konteinerio atveju **rikiavimas** vyksta žymiai greičiau nei list, ypač dideliuose failuose, nes elementai yra saugomi **tęstinėje atminties vietoje** ir std::sort gali efektyviai naudoti indeksus.
+- Ilgiausiai ir toliau užtrunka nuskaitymas bei įrašymas į failą.
+- Skirtumas tarp vector ir list konteinerių ryškiausias **rikiavimo ir padalijimo** etapuose, ypač didesniuose failuose.
 
 ---
-
-> 💡 Kitoje dalyje bus pateiktas **tiesioginis `vector` vs `list` palyginimas** lentelėse ir grafikuose, kad būtų galima aiškiai vizualizuoti spartos skirtumus.
+## Palyginimas
+Kitoje dalyje bus pateiktas tiesioginis vector vs list palyginimas lentelėse ir grafikuose, kad būtų galima aiškiai vizualizuoti spartos skirtumus.
