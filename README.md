@@ -1,4 +1,4 @@
-# Studentų programos testavimas – v0.3
+# Studentų testavimas su list ir vector
 
 ## Testavimo sistema
 
@@ -76,11 +76,5 @@ Toliau pateikiami testavimo rezultatai, kai konteineriui buvo naudojamas **std::
 
 - **Rikiavimas:** `list` veikia greičiau nei `vector` su dideliais duomenų kiekiais.  
 - **Padalijimas / nuskaitymas:** `vector` yra spartesnis dėl tęstinės atminties struktūros.  
-- **Įrašymas:** abiem atvejais I/O (skaitymo / rašymo) procesas tampa ribojančiu veiksniu.  
-- **Bendras laikas:** abu konteineriai elgiasi panašiai iki ~1 mln. įrašų, bet su 10 mln. įrašų `vector` tampa lėtesnis dėl rikiavimo sąnaudų.
-
----
-
-## Vizualizacija
-
-Kitoje ataskaitos dalyje galima pateikti grafikus (pvz., su Excel ar Python), kurie aiškiai parodytų skirtumus tarp `list` ir `vector` konteinerių skirtingo dydžio failuose.
+- **Įrašymas/skaitymas:** įrašymo/skaitymo procesas tampa yra lėčiausi.  
+- **Bendras laikas:** abu konteineriai elgiasi panašiai iki 1 milijono įrašų, bet su 10 milijonų įrašų `vector` tampa lėtesnis dėl rikiavimo sąnaudų.
