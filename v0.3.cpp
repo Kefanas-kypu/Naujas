@@ -131,7 +131,6 @@ case 1: {
     break;
 }
 
-
         case 7: {
     vector<long long> sizes = {1000, 10000, 100000, 1000000, 10000000};
     cout << fixed << setprecision(3);

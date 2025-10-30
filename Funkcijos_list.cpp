@@ -8,7 +8,7 @@
 
 using namespace std;
 
-double vidurkis(const vector<int>& nd) {
+double vidurkis(const list<int>& nd) {
     if (nd.empty()) return 0;
     double suma = 0;
     for (auto x : nd) suma += x;
