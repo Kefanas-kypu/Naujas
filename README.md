@@ -9,7 +9,7 @@
 | **CPU**               | AMD Ryzen 7 PRO 4750U with Radeon Graphics (1.70 GHz)         |
 | **RAM**               | 16.0 GB (15.3 GB usable)                                      |
 | **Diskas**            | SSD                                                            |
-| **Operacinė sistema** | Windows 10                                                    |
+| **Operacinė sistema** | Windows 11                                                    |
 
 ---
 
@@ -76,5 +76,5 @@ Toliau pateikiami testavimo rezultatai, kai konteineriui buvo naudojamas **std::
 
 - **Rikiavimas:** `list` veikia greičiau nei `vector` su dideliais duomenų kiekiais.  
 - **Padalijimas / nuskaitymas:** `vector` yra spartesnis dėl tęstinės atminties struktūros.  
-- **Įrašymas/skaitymas:** įrašymo/skaitymo procesas tampa yra lėčiausi.  
+- **Įrašymas/skaitymas:** įrašymo/skaitymo procesas yra lėčiausi.  
 - **Bendras laikas:** abu konteineriai elgiasi panašiai iki 1 milijono įrašų, bet su 10 milijonų įrašų `vector` tampa lėtesnis dėl rikiavimo sąnaudų.
