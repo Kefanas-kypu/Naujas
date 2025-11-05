@@ -54,7 +54,7 @@ Matavimai atliekami sekundėmis
 | studentai_1000000  | 3.4217    | 0.9892    | 0.8670     | 6.9302   | 12.478           |
 | studentai_10000000 | 34.4127   | 15.092    | 8.9567     | 70.4169  | 129.478          |
 
-![List konteinerio testų išvedimas](Start_2_list.png)
+![List konteinerio testų išvedimas](Strat_2_list.png)
 
 ### Naudojant `std::vector<Studentas>`
 ### Problema dėl `vector` naudojimo strategijoje 2
