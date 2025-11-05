@@ -190,11 +190,11 @@ case 1: {
     auto start = std::chrono::high_resolution_clock::now();
 
     if (strategija == 1) {
-        std::cout << "Vykdoma strategija 1...\n";
+        std::cout << "Vykdoma strategija 1\n";
         vykdyti_strategija1();
     } 
     else if (strategija == 2) {
-    std::cout << "Vykdoma strategija 2...\n";
+    std::cout << "Vykdoma strategija 2\n";
 
     std::vector<long long> sizes = {1000, 10000, 100000, 1000000, 10000000};
     for (auto n : sizes) {

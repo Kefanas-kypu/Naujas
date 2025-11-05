@@ -9,9 +9,13 @@ Programa turi dvi strategijas studentų padalijimui pagal galutinį rezultatą:
 | Strategija 1 | Padalijimas į kietakius ir vargšiukus pagal galutinį rezultatą >= 5  | `strategija1_list/strategija1_vector` |
 | Strategija 2 | Padalijimas naudojant `erase` funkciją, kuri pašalina vargšiukus iš studentų failo | `strategija2_list/strategija2_vector` |
 
-### Strategijos 1 pavyzdys
+---
 
- Toliau pateikiami testavimo rezultatai, kai konteineriui buvo naudojamas **std::list<Studentas>**.  
+## Strategijos 1 pavyzdžiai
+
+### Naudojant `std::list<Studentas>`
+Matavimai atliekami sekundėmis
+
 
 | Failas             | Nuskaitymas | Rikiavimas | Padalijimas | Įrašymas | **Bendras laikas** |
 | ------------------ | ------------ | ----------- | ------------ | -------- | ------------------ |
@@ -23,8 +27,8 @@ Programa turi dvi strategijas studentų padalijimui pagal galutinį rezultatą:
 
 ![List konteinerio testų išvedimas](Testavimas_list.png)
 
-
-Toliau pateikiami testavimo rezultatai, kai konteineriui buvo naudojamas **std::vector<Studentas>**.  
+### Naudojant `std::vector<Studentas>`
+Matavimai atliekami sekundėmis
 
 | Failas             | Nuskaitymas | Rikiavimas | Padalijimas | Įrašymas | **Bendras laikas** |
 | ------------------ | ------------ | ----------- | ------------ | -------- | ------------------ |
@@ -33,3 +37,49 @@ Toliau pateikiami testavimo rezultatai, kai konteineriui buvo naudojamas **std::
 | studentai_100000   | 0.203        | 0.235       | 0.047        | 0.623    | **1.106**          |
 | studentai_1000000  | 1.996        | 3.073       | 0.513        | 5.796    | **11.574**         |
 | studentai_10000000 | 21.078       | 38.997      | 4.927        | 48.976   | **113.979**        |
+
+---
+
+## Strategijos 2 pavyzdžiai
+
+### Naudojant `std::list<Studentas>`
+Matavimai atliekami sekundėmis
+
+
+| Failas             | Nuskaitymas | Rikiavimas | Padalijimas | Įrašymas | **Bendras laikas** |
+|-------------------|------------|------------|-------------|----------|------------------|
+| studentai_1000     | 0.00439   | 0.000206  | 0.000411   | 0.011823 | 0.01703          |
+| studentai_10000    | 0.03442   | 0.003519  | 0.005312   | 0.063949 | 0.10947          |
+| studentai_100000   | 0.34052   | 0.055891  | 0.068417   | 0.612880 | 1.0771           |
+| studentai_1000000  | 3.4217    | 0.9892    | 0.8670     | 6.9302   | 12.478           |
+| studentai_10000000 | 34.4127   | 15.092    | 8.9567     | 70.4169  | 129.478          |
+
+![List konteinerio testų išvedimas](Start_2_list.png)
+
+### Naudojant `std::vector<Studentas>`
+### Problema dėl `vector` naudojimo strategijoje 2
+
+Tyrimų metu paaiškėjo, kad naudojant `std::vector` studentų sąrašui, strategija 2  tampa labai neefektyvi. 
+Net 10 000 studentų failas strategijai 2 su `vector` užtruko apie 130 sekundžių. Prognozuojant 10 milijonų studentų failą, vykdymo laikas išaugtų iki kelių valandų. Tai visiškai nepriimtina praktikoje. 
+Taip yra todėl, nes po kiekvieno ištrynimo elementai yra perstumiami į kairę pusę per n vietų ir tai užima labai daug laiko.
+
+![List konteinerio testų išvedimas](Start_2_vector.png)
+
+**Išvada:**  
+Naudojant `vector` su dažnu `erase`, operacija tampa kvadratinė, todėl dideliems studentų sąrašams vykdymas užtrunka nepriimtinais laikais. Todėl praktikoje strategijai 2 reikėtų rinktis sąrašą (`list`) arba efektyvią particionavimo funkciją (`stable_partition`).
+
+
+Matome, kad antra strategija yra gerokai lėtesnė už pirmą strategiją, todėl trečiai strategijai naudosime pirmos strategijos vector konteinerį
+
+## Strategija 3
+
+
+### Patobulinta 
+
+| Failas             | Nuskaitymas | Rikiavimas | Padalijimas | Įrašymas | **Bendras laikas** |
+| ------------------ | ------------ | ----------- | ------------ | -------- | ------------------ |
+| studentai_1000     | TBD          | TBD         | TBD          | TBD      | **TBD**            |
+| studentai_10000    | TBD          | TBD         | TBD          | TBD      | **TBD**            |
+| studentai_100000   | TBD          | TBD         | TBD          | TBD      | **TBD**            |
+| studentai_1000000  | TBD          | TBD         | TBD          | TBD      | **TBD**            |
+| studentai_10000000 | TBD          | TBD         | TBD          | TBD      | **TBD**            |
