@@ -195,6 +195,20 @@ StudentGroups padalinti_studentus(const vector<Studentas>& grupe) {
     return groups;
 }
 
+void strategija2_vector(std::vector<Studentas>& studentai, std::vector<Studentas>& vargsiukai) {
+    auto it = studentai.begin();
+    while (it != studentai.end()) {
+        if (it->gal_rezultatas < 5.0) {
+            vargsiukai.push_back(*it);
+            it = studentai.erase(it);  // erase grąžina iteratorių į kitą elementą
+        } else {
+            ++it;
+        }
+    }
+}
+
+
+
 // ------------------ issaugoti i faila ------------------
 void issaugoti_i_faila(const vector<Studentas>& grupe, const string& failo_vardas) {
     ofstream out(failo_vardas);
@@ -203,14 +217,14 @@ void issaugoti_i_faila(const vector<Studentas>& grupe, const string& failo_varda
         return;
     }
 
-    out << setw(10) << left << "Vardas" << "|"
+    out << setw(15) << left << "Vardas" << "|"
         << setw(15) << right << "Pavarde" << "|"
         << setw(20) << right << "Galutinis (Vid.)" << "|"
         << setw(20) << right << "Galutinis (Med.)" << endl;
     out << "--------------------------------------------------------------------" << endl;
 
     for (const auto& stud : grupe) {
-        out << setw(11) << left << stud.vardas << "|"
+        out << setw(15) << left << stud.vardas << "|"
             << setw(15) << right << stud.pavarde << "|"
             << fixed << setprecision(2) << setw(20) << right << stud.gal_rezultatas << "|"
             << fixed << setprecision(2) << setw(20) << right << stud.mediana << endl;

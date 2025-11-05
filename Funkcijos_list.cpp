@@ -204,7 +204,7 @@ void generuoti_studentu_faila(long long n, int nd_kiekis) {
     fr.close();
 }
 
-StudentGroups padalinti_studentus(const list<Studentas>& grupe) {
+StudentGroups strategija1_list(const list<Studentas>& grupe) {
     StudentGroups groups;
 
     for (const auto& s : grupe) {
@@ -216,8 +216,94 @@ StudentGroups padalinti_studentus(const list<Studentas>& grupe) {
     return groups;
 }
 
+void vykdyti_strategija1() {
+    vector<long long> sizes = {1000, 10000, 100000, 1000000, 10000000};
+
+    for (auto n : sizes) {
+        string fail_name = "studentai_" + to_string(n) + ".txt";
+        list<Studentas> test_grupe;
+
+        auto start_nuskaitymas = chrono::high_resolution_clock::now();
+        skaityti_is_failo(test_grupe, fail_name);  
+        auto end_nuskaitymas = chrono::high_resolution_clock::now();
+
+        if (test_grupe.empty()) {
+            cout << "Failas " << fail_name << " tuščias arba nepavyko nuskaityti.\n";
+            continue;
+        }
+
+        auto start_rikiavimas = chrono::high_resolution_clock::now();
+        test_grupe.sort([](const Studentas& a, const Studentas& b) {
+            return a.gal_rezultatas < b.gal_rezultatas;
+        });
+        auto end_rikiavimas = chrono::high_resolution_clock::now();
+
+        auto start_padalijimas = chrono::high_resolution_clock::now();
+        StudentGroups groups = strategija1_list(test_grupe);
+        auto end_padalijimas = chrono::high_resolution_clock::now();
+
+        auto start_irasymas = chrono::high_resolution_clock::now();
+        issaugoti_i_faila(groups.kietiakiai, "kietiakiai_" + to_string(n) + ".txt");
+        issaugoti_i_faila(groups.vargsiukai, "vargsiukai_" + to_string(n) + ".txt");
+        auto end_irasymas = chrono::high_resolution_clock::now();
+
+        double laikas_nuskaitymas = chrono::duration<double>(end_nuskaitymas - start_nuskaitymas).count();
+        double laikas_rikiavimas = chrono::duration<double>(end_rikiavimas - start_rikiavimas).count();
+        double laikas_padalijimas = chrono::duration<double>(end_padalijimas - start_padalijimas).count();
+        double laikas_irasymas = chrono::duration<double>(end_irasymas - start_irasymas).count();
+
+        cout << "\n--- Testuojama su failu " << fail_name << " ---\n";
+        cout << "Failo nuskaitymo laikas: " << laikas_nuskaitymas << " s\n";
+        cout << "Rikiavimo laikas: " << laikas_rikiavimas << " s\n";
+        cout << "Padalijimo laikas: " << laikas_padalijimas << " s\n";
+        cout << "Irasymo i failus laikas: " << laikas_irasymas << " s\n";
+        cout << "Bendras laikas: " << laikas_nuskaitymas + laikas_rikiavimas + laikas_padalijimas + laikas_irasymas << " s\n";
+    }
+}
+
+// Funkcija
+void strategija2_list(std::list<Studentas>& studentai, std::list<Studentas>& vargsiukai) {
+    for (auto it = studentai.begin(); it != studentai.end();) {
+        if (it->gal_rezultatas < 5.0) {
+            vargsiukai.push_back(*it);
+            it = studentai.erase(it);
+        } else {
+            ++it;
+        }
+    }
+}
+
+
+void vykdyti_strategija2() {
+    std::vector<long long> sizes = {1000, 10000, 100000, 1000000, 10000000};
+    std::cout << std::fixed << std::setprecision(3);
+
+    for (auto n : sizes) {
+        std::string fail_name = "studentai_" + std::to_string(n) + ".txt";
+        std::list<Studentas> grupe;
+
+        skaityti_is_failo(grupe, fail_name);
+
+        if (grupe.empty()) {
+            std::cout << "Failas " << fail_name << " tuščias arba nepavyko nuskaityti.\n";
+            continue;
+        }
+
+        auto start = std::chrono::high_resolution_clock::now();
+
+        // 👇 čia turi būti kviečiama funkcija su failo vardu, o ne sąrašu
+        //strategija2_list(grupe);
+
+        auto end = std::chrono::high_resolution_clock::now();
+
+        std::cout << "\n--- Testuojama su failu " << fail_name << " ---\n";
+        std::cout << "Strategijos laikas: "
+                  << std::chrono::duration<double>(end - start).count() << " s\n";
+    }
+}
+
 void issaugoti_i_faila(const std::list<Studentas>& grupe, const std::string& failo_vardas) {
-    std::ofstream out(failo_vardas);
+    std::ofstream out(failo_vardas, std::ios::trunc); 
     if (!out) {
         std::cout << "Nepavyko sukurti failo: " << failo_vardas << std::endl;
         return;
@@ -236,4 +322,3 @@ void issaugoti_i_faila(const std::list<Studentas>& grupe, const std::string& fai
             << std::fixed << std::setprecision(2) << std::setw(20) << std::right << stud.mediana << std::endl;
     }
 }
-

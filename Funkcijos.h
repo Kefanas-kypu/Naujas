@@ -11,4 +11,5 @@ void surusiuoti_pagal_varda(std::vector<Studentas>& grupe);
 void skaityti_is_failo(std::vector<Studentas>& grupe, const std::string& failo_vardas);
 void generuoti_studentu_faila(long long n, int nd_count);
 StudentGroups padalinti_studentus(const std::vector<Studentas>& grupe);
+void strategija2_vector(std::vector<Studentas>& studentai, std::vector<Studentas>& vargsiukai);
 void issaugoti_i_faila(const std::vector<Studentas>& grupe, const std::string& failo_vardas);

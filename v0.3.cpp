@@ -21,13 +21,14 @@ int main() {
         cout << "5. Sugeneruoti atsitiktinius studentu failus" << endl;
         cout << "6. Padalinti studentus i grupes ir issaugoti i failus" << endl;
         cout << "7. Automatizuotas testas (5 failai)" << endl;
+        cout << "8. Lyginti strategijas" << endl;
         cout << "Pasirinkite veiksma: ";
         cin >> pasirinkimas;
 
         switch(pasirinkimas) {
 case 1: {
     Studentas s = stud_iv();
-    std::cout << "Objekto adresas: " << &s << std::endl; // <-- čia pridėti
+    std::cout << "Objekto adresas: " << &s << std::endl;
     grupe.push_back(s);
     break;
 }
@@ -88,7 +89,7 @@ case 1: {
 
     auto start_rusiavimas = chrono::high_resolution_clock::now();
 
-    StudentGroups groups = padalinti_studentus(grupe);
+    StudentGroups groups = strategija1_list(grupe);
 
     if (rusiavimas == 1) {
         groups.kietiakiai.sort([](const Studentas& a, const Studentas& b){
@@ -141,7 +142,7 @@ case 1: {
         list<Studentas> test_grupe;
 
         auto start_nuskaitymas = chrono::high_resolution_clock::now();
-        skaityti_is_failo(test_grupe, fail_name);   // perrašyta funkcija Funkcijos_list.cpp
+        skaityti_is_failo(test_grupe, fail_name);  
         auto end_nuskaitymas = chrono::high_resolution_clock::now();
         double laikas_nuskaitymas = chrono::duration<double>(end_nuskaitymas - start_nuskaitymas).count();
 
@@ -158,7 +159,7 @@ case 1: {
         double laikas_rikiavimas = chrono::duration<double>(end_rikiavimas - start_rikiavimas).count();
 
         auto start_padalijimas = chrono::high_resolution_clock::now();
-        StudentGroups groups = padalinti_studentus(test_grupe);
+        StudentGroups groups = strategija1_list(test_grupe);
         auto end_padalijimas = chrono::high_resolution_clock::now();
         double laikas_padalijimas = chrono::duration<double>(end_padalijimas - start_padalijimas).count();
 
@@ -176,6 +177,119 @@ case 1: {
         cout << "Irasymo laikas i failus laikas: " << laikas_irasymas << " s\n";
         cout << "Bendras laikas: " << laikas_total << " s\n";
     }
+    break;
+}
+   case 8: {
+    int strategija;
+    std::cout << "Pasirinkite strategija:\n";
+    std::cout << "1 - Strategija 1 (StudentGroups)\n";
+    std::cout << "2 - Strategija 2 (erase, vargsiukai išbraukiami)\n";
+    std::cout << "Jusu pasirinkimas: ";
+    std::cin >> strategija;
+
+    auto start = std::chrono::high_resolution_clock::now();
+
+    if (strategija == 1) {
+        std::cout << "Vykdoma strategija 1...\n";
+        vykdyti_strategija1();
+    } 
+    else if (strategija == 2) {
+    std::cout << "Vykdoma strategija 2...\n";
+
+    std::vector<long long> sizes = {1000, 10000, 100000, 1000000, 10000000};
+    for (auto n : sizes) {
+        std::string fail_name = "studentai_" + std::to_string(n) + ".txt";
+        std::list<Studentas> grupe;
+        std::list<Studentas> vargsiukai;
+
+        auto start_total = std::chrono::high_resolution_clock::now();
+
+        // Nuskaitymas
+        auto start_read = std::chrono::high_resolution_clock::now();
+        skaityti_is_failo(grupe, fail_name);
+        auto end_read = std::chrono::high_resolution_clock::now();
+
+        if (grupe.empty()) {
+            std::cout << "Failas " << fail_name << " tuščias arba nepavyko nuskaityti.\n";
+            continue;
+        }
+
+        // Rikiavimas
+        auto start_sort = std::chrono::high_resolution_clock::now();
+        grupe.sort([](const Studentas& a, const Studentas& b){
+            return a.gal_rezultatas > b.gal_rezultatas;
+        });
+        auto end_sort = std::chrono::high_resolution_clock::now();
+
+        // Padalijimas
+        auto start_split = std::chrono::high_resolution_clock::now();
+        strategija2_list(grupe, vargsiukai);
+        auto end_split = std::chrono::high_resolution_clock::now();
+
+        // Įrašymas į failus
+        auto start_write = std::chrono::high_resolution_clock::now();
+        issaugoti_i_faila(grupe, "studentai_" + std::to_string(n) + ".txt");
+        issaugoti_i_faila(vargsiukai, "vargsiukai_" + std::to_string(n) + ".txt");
+        auto end_write = std::chrono::high_resolution_clock::now();
+
+        auto end_total = std::chrono::high_resolution_clock::now();
+
+        // Spausdinimas
+        std::cout << "--- Testuojama su failu " << fail_name << " ---\n";
+        std::cout << "Failo nuskaitymo laikas: " 
+                  << std::chrono::duration<double>(end_read - start_read).count() << " s\n";
+        std::cout << "Rikiavimo laikas: " 
+                  << std::chrono::duration<double>(end_sort - start_sort).count() << " s\n";
+        std::cout << "Padalijimo laikas: " 
+                  << std::chrono::duration<double>(end_split - start_split).count() << " s\n";
+        std::cout << "Irasymo i failus laikas: " 
+                  << std::chrono::duration<double>(end_write - start_write).count() << " s\n";
+        std::cout << "Bendras laikas: " 
+                  << std::chrono::duration<double>(end_total - start_total).count() << " s\n\n";
+    }
+}
+
+    /*
+    else if (strategija == 2) {
+        std::cout << "Vykdoma strategija 2...\n";
+
+        std::vector<long long> sizes = {1000, 10000, 100000, 1000000, 10000000};
+        for (auto n : sizes) {
+            std::string fail_name = "studentai_" + std::to_string(n) + ".txt";
+            std::list<Studentas> grupe;
+            std::list<Studentas> vargsiukai;
+
+            skaityti_is_failo(grupe, fail_name);
+
+            if (grupe.empty()) {
+                std::cout << "Failas " << fail_name << " tuščias arba nepavyko nuskaityti.\n";
+                continue;
+            }
+
+            // Rūšiuojame pagal galutinį rezultatą prieš erase
+            grupe.sort([](const Studentas& a, const Studentas& b){
+                return a.gal_rezultatas > b.gal_rezultatas;
+            });
+
+            // Padalijame į kietiakiai ir vargšiukai
+            strategija2_list(grupe, vargsiukai);
+
+            issaugoti_i_faila(grupe, "studentai_" + std::to_string(n) + ".txt");
+            issaugoti_i_faila(vargsiukai, "vargsiukai_" + std::to_string(n) + ".txt");
+
+            std::cout << "--- Testuojama su failu " << fail_name << " baigta ---\n";
+            std::cout << "Kietiakiai: " << grupe.size() << " studentai, Vargsiukai: " << vargsiukai.size() << " studentai\n";
+        }
+    } 
+    else {
+        std::cout << "Neteisingas pasirinkimas!\n";
+    }
+
+    auto end = std::chrono::high_resolution_clock::now();
+    std::cout << "Strategijos vykdymo laikas: "
+              << std::chrono::duration<double>(end - start).count() << " s\n";
+
+    */
     break;
 }
 
