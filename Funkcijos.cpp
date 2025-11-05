@@ -9,7 +9,6 @@
 
 using namespace std;
 
-// ------------------ stud_iv (ivedimas is klaviaturos) ------------------
 Studentas stud_iv() {
     Studentas pirmas;
     int sum = 0, n = 0;
@@ -86,7 +85,6 @@ Studentas stud_iv() {
     return pirmas;
 }
 
-// ------------------ atspausdinti grupe i ekrana ------------------
 void spausdinti_grupe(const vector<Studentas>& grupe) {
     if (grupe.empty()) {
         cout << "Nera studentu" << endl;
@@ -107,14 +105,12 @@ void spausdinti_grupe(const vector<Studentas>& grupe) {
     }
 }
 
-// ------------------ rusiavimas pagal varda ------------------
 void surusiuoti_pagal_varda(vector<Studentas>& grupe) {
     sort(grupe.begin(), grupe.end(), [](const Studentas& a, const Studentas& b) {
         return a.vardas < b.vardas;
     });
 }
 
-// ------------------ bendras rusiavimas pagal pasirinkima ------------------
 void rikiuoti_studentus(vector<Studentas>& grupe, bool pagal_varda) {
     if (pagal_varda) {
         sort(grupe.begin(), grupe.end(), [](const Studentas& a, const Studentas& b) {
@@ -127,7 +123,6 @@ void rikiuoti_studentus(vector<Studentas>& grupe, bool pagal_varda) {
     }
 }
 
-// ------------------ skaityti is failo ------------------
 void skaityti_is_failo(vector<Studentas>& grupe, const string& failo_vardas) {
     ifstream failas(failo_vardas);
     if (!failas) {
@@ -183,7 +178,6 @@ void skaityti_is_failo(vector<Studentas>& grupe, const string& failo_vardas) {
     cout << "Studentai nuskaityti is failo: " << failo_vardas << endl;
 }
 
-// ------------------ padalinti studentus ------------------
 StudentGroups padalinti_studentus(const vector<Studentas>& grupe) {
     StudentGroups groups;
     for (const auto& stud : grupe) {
@@ -200,7 +194,7 @@ void strategija2_vector(std::vector<Studentas>& studentai, std::vector<Studentas
     while (it != studentai.end()) {
         if (it->gal_rezultatas < 5.0) {
             vargsiukai.push_back(*it);
-            it = studentai.erase(it);  // erase grąžina iteratorių į kitą elementą
+            it = studentai.erase(it); 
         } else {
             ++it;
         }
@@ -209,7 +203,6 @@ void strategija2_vector(std::vector<Studentas>& studentai, std::vector<Studentas
 
 
 
-// ------------------ issaugoti i faila ------------------
 void issaugoti_i_faila(const vector<Studentas>& grupe, const string& failo_vardas) {
     ofstream out(failo_vardas);
     if (!out) {
@@ -231,7 +224,6 @@ void issaugoti_i_faila(const vector<Studentas>& grupe, const string& failo_varda
     }
 }
 
-// ------------------ generuoti faila ------------------
 void generuoti_studentu_faila(long long n, int nd_count) {
     ofstream fout("studentai_" + to_string(n) + ".txt");
     if (!fout) {
@@ -253,7 +245,6 @@ void generuoti_studentu_faila(long long n, int nd_count) {
     cout << "Sugeneruotas failas studentai_" << n << ".txt su " << n << " studentais.\n";
 }
 
-// ------------------ generuoti atsitiktini studenta ------------------
 Studentas generuoti_atsitiktini_studenta() {
     Studentas s;
     s.vardas = "Vardas" + to_string(rand() % 1000000);

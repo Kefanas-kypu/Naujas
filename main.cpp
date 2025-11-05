@@ -36,7 +36,7 @@ int main() {
 
          case 1: {
     Studentas s = stud_iv();
-    std::cout << "Objekto adresas: " << &s << std::endl; // <-- čia
+    std::cout << "Objekto adresas: " << &s << std::endl; 
     grupe.push_back(s);
     break;
 }
@@ -46,7 +46,6 @@ int main() {
         cout << "Nera studentu duomenu!" << endl;
         break;
     }
-    // Naudojamas vector ir std::sort per surusiuoti_pagal_varda funkciją
     surusiuoti_pagal_varda(grupe);
     spausdinti_grupe(grupe);
     break;
@@ -191,13 +190,13 @@ int main() {
         case 8: {
     int strategija;
     cout << "Pasirinkite strategija:\n";
-    cout << "1 - Strategija 1 (StudentGroups)\n";
-    cout << "2 - Strategija 2 (erase, vargsiukai isbraukiami)\n";
+    cout << "1 - Strategija 1 (grupavimas i vargsiukus ir kietiakus)\n";
+    cout << "2 - Strategija 2 (vargsiukai isbraukiami)\n";
     cout << "Jusu pasirinkimas: ";
     cin >> strategija;
 
     if (strategija == 1) {
-        cout << "Vykdoma strategija 1...\n";
+        cout << "Vykdoma strategija 1\n";
     vector<long long> sizes = {1000, 10000, 100000, 1000000, 10000000};
     cout << fixed << setprecision(3);
 
@@ -244,7 +243,7 @@ int main() {
     }
     } 
     else if (strategija == 2) {
-        cout << "Vykdoma strategija 2 su erase...\n";
+        cout << "Vykdoma strategija 2 su erase\n";
 
         vector<long long> sizes = {1000, 10000, 100000, 1000000, 10000000};
         cout << fixed << setprecision(6);
@@ -296,7 +295,7 @@ int main() {
     break;
 }
         case 9: {
-    cout << "Pirmoji strategija naudojant stable_partition...\n";
+    cout << "Pirmoji strategija naudojant stable_partition\n";
 
     vector<long long> sizes = {1000, 10000, 100000, 1000000, 10000000};
     cout << fixed << setprecision(3);
@@ -316,15 +315,13 @@ int main() {
             continue;
         }
 
-        // Rikiavimas pagal vardą, kad stable_partition išlaikytų tvarką
         auto start_sort = chrono::high_resolution_clock::now();
         sort(test_grupe.begin(), test_grupe.end(), [](const Studentas& a, const Studentas& b){
-        return a.gal_rezultatas > b.gal_rezultatas; // didėjimo tvarka pagal balą
+        return a.gal_rezultatas > b.gal_rezultatas; 
         });
         auto end_sort = chrono::high_resolution_clock::now();
         double laikas_sort = chrono::duration<double>(end_sort - start_sort).count();
 
-        // Padalijimas su stable_partition
         auto start_partition = chrono::high_resolution_clock::now();
         auto it = stable_partition(test_grupe.begin(), test_grupe.end(),
                            [](const Studentas& s){ return s.gal_rezultatas >= 5.0; });
@@ -333,7 +330,6 @@ int main() {
         auto end_partition = chrono::high_resolution_clock::now();
         double laikas_partition = chrono::duration<double>(end_partition - start_partition).count();
 
-        // Įrašymas į failus
         auto start_write = chrono::high_resolution_clock::now();
         issaugoti_i_faila(kietiakiai, "kietiakiai_" + to_string(n) + ".txt");
         issaugoti_i_faila(vargsiukai, "vargsiukai_" + to_string(n) + ".txt");
@@ -350,7 +346,6 @@ int main() {
     }
     break;
 }
-
 
         default:
             cout << "Neteisingas pasirinkimas." << endl;

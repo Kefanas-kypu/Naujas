@@ -3,7 +3,6 @@
 #include <vector>
 #include <string>
 
-// Funkciju deklaracijos (prototipai)
 Studentas stud_iv();  
 Studentas generuoti_atsitiktini_studenta(); 
 void spausdinti_grupe(const std::vector<Studentas>& grupe);

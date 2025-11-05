@@ -13,7 +13,7 @@ struct StudentGroups {
     std::list<Studentas> vargsiukai;
 };
 
-Studentas stud_iv();  // vartotojo įvedimas
+Studentas stud_iv(); 
 void spausdinti_grupe(const std::list<Studentas>& grupe);
 void skaityti_is_failo(std::list<Studentas>& grupe, const std::string& failo_vardas);
 void generuoti_studentu_faila(long long n, int nd_kiekis);

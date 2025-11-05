@@ -261,7 +261,6 @@ void vykdyti_strategija1() {
     }
 }
 
-// Funkcija
 void strategija2_list(std::list<Studentas>& studentai, std::list<Studentas>& vargsiukai) {
     for (auto it = studentai.begin(); it != studentai.end();) {
         if (it->gal_rezultatas < 5.0) {
@@ -290,9 +289,6 @@ void vykdyti_strategija2() {
         }
 
         auto start = std::chrono::high_resolution_clock::now();
-
-        // 👇 čia turi būti kviečiama funkcija su failo vardu, o ne sąrašu
-        //strategija2_list(grupe);
 
         auto end = std::chrono::high_resolution_clock::now();
 
