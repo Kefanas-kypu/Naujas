@@ -76,10 +76,10 @@ Matome, kad antra strategija yra gerokai lėtesnė už pirmą strategiją, todė
 
 ### Patobulinta
 Pridėtos naujos funkcijos iš pateikto sąrašo:
--std::partition
--std::copy
+- std::partition
+- std::copy
 
-Ši lentelė pateikia vidutinius laiko rezultatus, gautus testuojant **strategiją 3** (naudojant `stable_partition` ir `sort`) su skirtingo dydžio studentų failais. Testavimas atliktas 5 kartus, vidurkiai pateikti lentelėje.
+Ši lentelė pateikia vidutinius laiko rezultatus, gautus testuojant **strategiją 3** (naudojant `partition` ir `sort`) su skirtingo dydžio studentų failais. Testavimas atliktas 5 kartus, vidurkiai pateikti lentelėje.
 
 | Failo dydis       | Nuskaitymas | Rikiavimas  | Padalijimas  | Įrašymas  | **Bendras laikas** |
 |------------------|----------------|----------------|----------------|---------------|------------------|
