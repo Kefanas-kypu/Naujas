@@ -89,3 +89,10 @@ Pridėtos naujos funkcijos iš pateikto sąrašo:
 | studentai_1000000        | 1.9738         | 3.1962         | 0.283          | 5.9994        | **11.4526**          |
 | studentai_10000000       | 20.9134        | 40.063         | 3.265          | 51.8294       | **115.8508**         |
 
+### Naudojimosi instrukcija
+
+- Atsidaryk Visual Studio code
+- Atsidaryk terminalą
+- Padaryk mkdir build ir tada cd build
+- Paleisk mingw32-make
+- Tada jau galėsi paleisti \Studentai_vector.exe arba \Studentai_list.exe, kurie paleis kodą vectoriaus arba list konteineriui.
