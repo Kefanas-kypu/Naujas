@@ -25,7 +25,7 @@ Matavimai atliekami sekundėmis
 | studentai_1000000  | 3.379        | 0.970       | 1.411        | 6.839    | **12.620**         |
 | studentai_10000000 | 34.220       | 15.929      | 14.842       | 51.843   | **116.233**        |
 
-![List konteinerio testų išvedimas](Testavimas_list.png)
+![List konteinerio testų išvedimas](images/Testavimas_list.png)
 
 ### Naudojant `std::vector<Studentas>`
 Matavimai atliekami sekundėmis
@@ -54,7 +54,7 @@ Matavimai atliekami sekundėmis
 | studentai_1000000  | 3.4217    | 0.9892    | 0.8670     | 6.9302   | **12.478**           |
 | studentai_10000000 | 34.4127   | 15.092    | 8.9567     | 70.4169  | **129.478**          |
 
-![List konteinerio testų išvedimas](Strat_2_list.png)
+![List konteinerio testų išvedimas](images/Strat_2_list.png)
 
 ### Naudojant `std::vector<Studentas>`
 ### Problema dėl `vector` naudojimo strategijoje 2
@@ -63,7 +63,7 @@ Tyrimų metu paaiškėjo, kad naudojant `std::vector` studentų sąrašui, strat
 Net 10 000 studentų failas strategijai 2 su `vector` užtruko apie 130 sekundžių. Prognozuojant 10 milijonų studentų failą, vykdymo laikas išaugtų iki kelių valandų. Tai visiškai nepriimtina praktikoje. 
 Taip yra todėl, nes po kiekvieno ištrynimo elementai yra perstumiami į kairę pusę per n vietų ir tai užima labai daug laiko.
 
-![List konteinerio testų išvedimas](Start_2_vector.png)
+![List konteinerio testų išvedimas](images/Start_2_vector.png)
 
 **Išvada:**  
 Naudojant `vector` su dažnu `erase`, operacija tampa kvadratinė, todėl dideliems studentų sąrašams vykdymas užtrunka nepriimtinais laikais. Todėl praktikoje strategijai 2 reikėtų rinktis sąrašą (`list`) arba efektyvią particionavimo funkciją (`stable_partition`).
