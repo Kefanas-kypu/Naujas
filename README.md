@@ -48,11 +48,11 @@ Matavimai atliekami sekundėmis
 
 | Failas             | Nuskaitymas | Rikiavimas | Padalijimas | Įrašymas | **Bendras laikas** |
 |-------------------|------------|------------|-------------|----------|------------------|
-| studentai_1000     | 0.00439   | 0.000206  | 0.000411   | 0.011823 | 0.01703          |
-| studentai_10000    | 0.03442   | 0.003519  | 0.005312   | 0.063949 | 0.10947          |
-| studentai_100000   | 0.34052   | 0.055891  | 0.068417   | 0.612880 | 1.0771           |
-| studentai_1000000  | 3.4217    | 0.9892    | 0.8670     | 6.9302   | 12.478           |
-| studentai_10000000 | 34.4127   | 15.092    | 8.9567     | 70.4169  | 129.478          |
+| studentai_1000     | 0.00439   | 0.000206  | 0.000411   | 0.011823 | **0.01703**          |
+| studentai_10000    | 0.03442   | 0.003519  | 0.005312   | 0.063949 | **0.10947**          |
+| studentai_100000   | 0.34052   | 0.055891  | 0.068417   | 0.612880 | **1.0771**         |
+| studentai_1000000  | 3.4217    | 0.9892    | 0.8670     | 6.9302   | **12.478**           |
+| studentai_10000000 | 34.4127   | 15.092    | 8.9567     | 70.4169  | **129.478**          |
 
 ![List konteinerio testų išvedimas](Strat_2_list.png)
 
@@ -74,12 +74,18 @@ Matome, kad antra strategija yra gerokai lėtesnė už pirmą strategiją, todė
 ## Strategija 3
 
 
-### Patobulinta 
+### Patobulinta
+Pridėtos naujos funkcijos iš pateikto sąrašo:
+-std::partition
+-std::copy
 
-| Failas             | Nuskaitymas | Rikiavimas | Padalijimas | Įrašymas | **Bendras laikas** |
-| ------------------ | ------------ | ----------- | ------------ | -------- | ------------------ |
-| studentai_1000     | TBD          | TBD         | TBD          | TBD      | **TBD**            |
-| studentai_10000    | TBD          | TBD         | TBD          | TBD      | **TBD**            |
-| studentai_100000   | TBD          | TBD         | TBD          | TBD      | **TBD**            |
-| studentai_1000000  | TBD          | TBD         | TBD          | TBD      | **TBD**            |
-| studentai_10000000 | TBD          | TBD         | TBD          | TBD      | **TBD**            |
+Ši lentelė pateikia vidutinius laiko rezultatus, gautus testuojant **strategiją 3** (naudojant `stable_partition` ir `sort`) su skirtingo dydžio studentų failais. Testavimas atliktas 5 kartus, vidurkiai pateikti lentelėje.
+
+| Failo dydis       | Nuskaitymas | Rikiavimas  | Padalijimas  | Įrašymas  | **Bendras laikas** |
+|------------------|----------------|----------------|----------------|---------------|------------------|
+| studentai_1000            | 0.0028         | 0.0088         | 0.0004         | 0.023         | **0.0348**           |
+| studentai_10000           | 0.021          | 0.018          | 0.002          | 0.0658        | **0.1068**           |
+| studentai_100000          | 0.200          | 0.2422         | 0.025          | 0.5978        | **1.0646**           |
+| studentai_1000000        | 1.9738         | 3.1962         | 0.283          | 5.9994        | **11.4526**          |
+| studentai_10000000       | 20.9134        | 40.063         | 3.265          | 51.8294       | **115.8508**         |
+

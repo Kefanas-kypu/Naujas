@@ -11,4 +11,5 @@ void skaityti_is_failo(std::vector<Studentas>& grupe, const std::string& failo_v
 void generuoti_studentu_faila(long long n, int nd_count);
 StudentGroups padalinti_studentus(const std::vector<Studentas>& grupe);
 void strategija2_vector(std::vector<Studentas>& studentai, std::vector<Studentas>& vargsiukai);
+void strategija3_optimizuota(const std::string& fail_name, long long n);
 void issaugoti_i_faila(const std::vector<Studentas>& grupe, const std::string& failo_vardas);

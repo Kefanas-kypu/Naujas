@@ -98,13 +98,17 @@ case 1: {
         groups.vargsiukai.sort([](const Studentas& a, const Studentas& b){
             return a.vardas < b.vardas;
         });
-    } else {
+    } else if (rusiavimas == 0) {
         groups.kietiakiai.sort([](const Studentas& a, const Studentas& b){
             return a.gal_rezultatas > b.gal_rezultatas;
         });
         groups.vargsiukai.sort([](const Studentas& a, const Studentas& b){
             return a.gal_rezultatas > b.gal_rezultatas;
         });
+    }
+    else {
+        cout << "Neteisingas pasirinkimas rusiavimui!" << endl;
+        break;
     }
 
     auto end_rusiavimas = chrono::high_resolution_clock::now();

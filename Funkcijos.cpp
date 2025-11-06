@@ -6,7 +6,8 @@
 #include <algorithm>
 #include <cstdlib>
 #include <ctime>
-
+#include <chrono>
+#include <execution>
 using namespace std;
 
 Studentas stud_iv() {
@@ -33,7 +34,7 @@ Studentas stud_iv() {
             n++;
         }
         pirmas.egzaminas = rand() % 10 + 1;
-    } else {
+    } else if (generuoti == 0) {
         int kl;
         cout << "Ar zinote, kiek pazymiu turi studentas? (1 - taip, 0 - ne): ";
         cin >> kl;
@@ -201,7 +202,58 @@ void strategija2_vector(std::vector<Studentas>& studentai, std::vector<Studentas
     }
 }
 
+void strategija3_optimizuota(const string& fail_name, long long n) {
+    vector<Studentas> studentai;
 
+    auto start_read = chrono::high_resolution_clock::now();
+    skaityti_is_failo(studentai, fail_name);
+    auto end_read = chrono::high_resolution_clock::now();
+    double laikas_read = chrono::duration<double>(end_read - start_read).count();
+
+    if (studentai.empty()) {
+        cout << "Failas " << fail_name << " tuscias arba nepavyko nuskaityti.\n";
+        return;
+    }
+
+    auto start_sort = chrono::high_resolution_clock::now();
+    sort(studentai.begin(), studentai.end(),
+         [](const Studentas& a, const Studentas& b) {
+             return a.gal_rezultatas > b.gal_rezultatas;
+         });
+    auto end_sort = chrono::high_resolution_clock::now();
+    double laikas_sort = chrono::duration<double>(end_sort - start_sort).count();
+
+    auto start_partition = chrono::high_resolution_clock::now();
+    auto it = partition(studentai.begin(), studentai.end(),
+                        [](const Studentas& s) { return s.gal_rezultatas >= 5.0; });
+
+    vector<Studentas> kietiakiai;
+    vector<Studentas> vargsiukai;
+
+    kietiakiai.reserve(distance(studentai.begin(), it));
+    vargsiukai.reserve(distance(it, studentai.end()));
+
+    copy(studentai.begin(), it, back_inserter(kietiakiai));
+    copy(it, studentai.end(), back_inserter(vargsiukai));
+
+    auto end_partition = chrono::high_resolution_clock::now();
+    double laikas_partition = chrono::duration<double>(end_partition - start_partition).count();
+
+    auto start_write = chrono::high_resolution_clock::now();
+    issaugoti_i_faila(kietiakiai, "kietiakiai_" + to_string(n) + ".txt");
+    issaugoti_i_faila(vargsiukai, "vargsiukai_" + to_string(n) + ".txt");
+    auto end_write = chrono::high_resolution_clock::now();
+    double laikas_write = chrono::duration<double>(end_write - start_write).count();
+
+    double laikas_total = laikas_read + laikas_sort + laikas_partition + laikas_write;
+
+    cout << "--- Testuojama su failu " << fail_name << " ---\n";
+    cout << "Nuskaitymas: " << laikas_read << " s\n";
+    cout << "Rikiavimas (pagal balus): " << laikas_sort << " s\n";
+    cout << "Padalijimas (partition): " << laikas_partition << " s\n";
+    cout << "Irasymas: " << laikas_write << " s\n";
+    cout << "Bendras laikas: " << laikas_total << " s\n";
+}
 
 void issaugoti_i_faila(const vector<Studentas>& grupe, const string& failo_vardas) {
     ofstream out(failo_vardas);
