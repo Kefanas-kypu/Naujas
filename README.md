@@ -4,10 +4,13 @@
 
 Programa turi dvi strategijas studentų padalijimui pagal galutinį rezultatą:  
 
+Programa turi tris strategijas studentų padalijimui pagal galutinį rezultatą:  
+
 | Strategija | Aprašymas | Panaudota funkcija |
 |------------|-----------|------------------|
 | Strategija 1 | Padalijimas į kietakius ir vargšiukus pagal galutinį rezultatą >= 5  | `strategija1_list/strategija1_vector` |
 | Strategija 2 | Padalijimas naudojant `erase` funkciją, kuri pašalina vargšiukus iš studentų failo | `strategija2_list/strategija2_vector` |
+| Strategija 3 | Patobulinta strategija naudojant `partition` ir `copy` funkcijas | `strategija3_vector` |
 
 ---
 
